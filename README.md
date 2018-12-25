@@ -22,7 +22,7 @@
 
 ## 反馈&贡献
 
-欢迎在[issues](issues)区提交bug与反馈
+欢迎在[issues](https://github.com/idealclover/Fxxk-NJU-Class-Evaluator/issues)区提交bug与反馈
 
 欢迎各种形式的pr >v<
 
