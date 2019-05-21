@@ -1,0 +1,108 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>开始使用 - 课程自动评估</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+    <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+    your browser</a> to improve your experience and security.</p>
+<![endif]-->
+<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">课程自动评估</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">开始使用 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://idealclover.top/" target="_blank">作者博客🔗</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/idealclover/Fxxk-NJU-Class-Evaluator" target="_blank">GitHub🔗</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container col-1-11 col-lg-6 tab">
+    <!--<h1><span class="badge badge-secondary banner">👆使用前请查看使用帮助ww</span></h1>-->
+    <form id="form">
+        <!--<form id="form" action="/fuck" method="post">-->
+        <div class="form-group">
+            <label for="usernameInput">学号</label>
+            <input type="text" class="form-control" id="usernameInput" aria-describedby="usernameHelp"
+                   placeholder="请输入您的学号"/>
+            <small id="usernameHelp" class="form-text text-muted">
+                我们以南大同学的身份保证不会存储你的学号与密码<br/>
+                欢迎在 <a href="https://github.com/idealclover/Fxxk-NJU-Class-Evaluator" target="_blank">GitHub</a> 上查看源码
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="passwordInput">教务系统密码</label>
+            <input type="password" class="form-control" id="passwordInput" aria-describedby="passwordHelp"
+                   placeholder="请输入您的教务系统密码"/>
+            <small id="passwordHelp" class="form-text text-muted">
+                我们以南大同学的身份保证不会存储你的学号与密码<br/>
+                欢迎在 <a href="https://github.com/idealclover/Fxxk-NJU-Class-Evaluator" target="_blank">GitHub</a> 上查看源码
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="validateInput">验证码</label>
+            <div class="row">
+                <div class="col-8">
+                    <input type="text" class="form-control" id="validateInput" placeholder="请输入您看到的验证码"/>
+                </div>
+                <div class="col-4">
+                    <img class="col-sm" src="{{validatepic}}"/>
+                </div>
+            </div>
+        </div>
+        <button type="button" onclick="send()" class="btn btn-secondary">提交</button>
+    </form>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+
+<script>
+    function send() {
+        // var a = $('#form').serialize();
+        var usr = $('#usernameInput').val();
+        var pwd = $('#passwordInput').val();
+        var val = $('#validateInput').val();
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/fuck",
+            data: {'username': usr, 'password': pwd, 'validateCode': val},
+            success: function (result) {
+                console.log(result);
+                if (result.resultCode == 200) {
+                    alert("SUCCESS");
+                }
+            },
+            error: function () {
+                alert("异常！");
+            }
+        });
+    }
+</script>
+
+</html>
