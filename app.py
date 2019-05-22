@@ -28,7 +28,7 @@ def login():
         r = requests.post('http://elite.nju.edu.cn/jiaowu/login.do',
                           data={'userName': username, 'password': password, 'ValidateCode': validcode},
                           cookies=cookies)
-        print(r.content.decode('utf-8'))
+        # print(r.content.decode('utf-8'))
         tmp = r.content.decode('utf-8')
         if tmp.find("验证码错误！") != -1:
             return jsonify({"status": "validate error"})
@@ -91,8 +91,8 @@ def index():
     cookie_string = "; ".join([str(x) + "=" + str(y) for x, y in r.cookies.items()])
     base64_data = base64.b64encode(r.content).decode("utf-8")
     base64_data = "data:image/png;base64," + base64_data
-    print(cookie_string)
-    print(base64_data)
+    # print(cookie_string)
+    # print(base64_data)
     session['cookie'] = cookie_string
     return render_template('index.html', validatepic=base64_data)
 
