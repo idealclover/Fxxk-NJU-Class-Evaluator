@@ -71,8 +71,95 @@
                 </div>
             </div>
         </div>
-        <button type="button" onclick="send()" class="btn btn-secondary">提交</button>
+        <button type="button" onclick="login()" class="btn btn-secondary">提交</button>
     </form>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">使用前说明</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        本工具由某无聊的同学开发<br />
+        仅用来针对<b>需要默认好评的课程</b><br />
+        请<b>确保</b>您其他需要评价的课程已评价完毕<br />
+        <b>上课不易，请不要轻易放弃您的权利</b><br />
+        谢谢合作！
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="window.open('', '_self', '');window.close();">退出</button>
+        <a type="button" class="btn btn-primary" href="http://elite.nju.edu.cn/jiaowu/" target="_blank">去教务网评价</a>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确认使用</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ready" tabindex="-1" role="dialog" aria-labelledby="readyTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successTitle">登录成功</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        登录成功！确定直接评价吗？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">我再想想</button>
+        <button type="button" id="fuck_button" class="btn btn-primary" onclick="fuck()">确认使用</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="successTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successTitle">评价成功</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        评价成功！可前往教务网查看
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">退出</button>
+        <a type="button" class="btn btn-primary" href="https://github.com/idealclover/Fxxk-NJU-Class-Evaluator" target="_blank">源码地址</a>
+        <a type="button" class="btn btn-primary" href="https://idealclover.top/" target="_blank">作者博客</a>
+        <a type="button" class="btn btn-primary" href="http://elite.nju.edu.cn/jiaowu/" target="_blank">去教务网查看</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="fail" tabindex="-1" role="dialog" aria-labelledby="failTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successTitle">遭遇异常</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        可前往教务网查看
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="window.open('', '_self', '');window.close();">退出</button>
+        <a type="button" class="btn btn-primary" href="http://elite.nju.edu.cn/jiaowu/" target="_blank">去教务网查看</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
@@ -82,7 +169,10 @@
 </body>
 
 <script>
-    function send() {
+    $(window).on('load',function(){
+        $('#myModal').modal({show: true, keyboard: false, backdrop: 'static'});
+    });
+    function login() {
         // var a = $('#form').serialize();
         var usr = $('#usernameInput').val();
         var pwd = $('#passwordInput').val();
@@ -90,16 +180,49 @@
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "/fuck",
+            url: "/login",
             data: {'username': usr, 'password': pwd, 'validateCode': val},
             success: function (result) {
                 console.log(result);
-                if (result.resultCode == 200) {
-                    alert("SUCCESS");
+                if (result.status === "success") {
+                    $('#ready').modal({show: true});
+                } else if (result.status === "validate error") {
+
+                } else if (result.status === "username error") {
+
+                } else if (result.status === "password error") {
+
+                } else {
+
                 }
             },
-            error: function () {
-                alert("异常！");
+            error: function (e) {
+                console.log(e);
+                alert("服务器异常，请稍后再试");
+            }
+        });
+    }
+    function fuck(){
+        var $btn = $("#fuck_button");
+        $btn.prop("disabled", true);
+        $btn.html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Loading...");
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/fuck",
+            success: function (result) {
+                console.log(result);
+                if (result.status === "success") {
+                    $btn.button('reset');
+                    $('#success').modal({show: true});
+                } else {
+
+                }
+            },
+            timeout: 30000,
+            error: function (e) {
+                console.log(e);
+                alert("服务器异常，请稍后再试");
             }
         });
     }

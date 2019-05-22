@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from http.cookies import SimpleCookie
 from bs4 import BeautifulSoup
 import requests
@@ -10,8 +10,8 @@ app = Flask(__name__)
 app.secret_key = secret_key
 
 
-@app.route('/fuck', methods=['GET', 'POST'])
-def fuck():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'POST':
         # session['username'] = request.form['username']
         # session['password'] = request.form['password']
@@ -29,7 +29,30 @@ def fuck():
                           data={'userName': username, 'password': password, 'ValidateCode': validcode},
                           cookies=cookies)
         print(r.content.decode('utf-8'))
+        tmp = r.content.decode('utf-8')
+        if tmp.find("验证码错误！") != -1:
+            return jsonify({"status": "validate error"})
+        elif tmp.find("用户名错误！") != -1:
+            return jsonify({"status": "username error"})
+        elif tmp.find("密码错误！") != -1:
+            return jsonify({"status": "password error"})
+        else:
+            return jsonify({"status": "success"})
+    return redirect(url_for('index'))
 
+
+@app.route('/fuck', methods=['GET', 'POST'])
+def fuck():
+    if request.method == 'POST':
+        # session['username'] = request.form['username']
+        # session['password'] = request.form['password']
+        # session['validateCode'] = request.form['validateCode']
+        cookie_string = session['cookie']
+        cookie = SimpleCookie()
+        cookie.load(cookie_string)
+        cookies = {}
+        for key, morsel in cookie.items():
+            cookies[key] = morsel.value
         r = requests.get('http://elite.nju.edu.cn/jiaowu/student/evalcourse/courseEval.do?method=currentEvalCourse',
                          cookies=cookies)
         soup = BeautifulSoup(r.content, 'lxml')
@@ -57,8 +80,7 @@ def fuck():
             # 发送评价post
             r = requests.post('http://elite.nju.edu.cn/jiaowu/student/evalcourse/courseEval.do?method=submitEval',
                               data=data, cookies=cookies)
-
-        return redirect(url_for('index'))
+        return jsonify({"status": "success"})
     return redirect(url_for('index'))
 
 
