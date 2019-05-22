@@ -113,7 +113,7 @@
         登录成功！确定直接评价吗？
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">我再想想</button>
+        <button type="button" id="fuck_back_button" class="btn btn-secondary" data-dismiss="modal">我再想想</button>
         <button type="button" id="fuck_button" class="btn btn-primary" onclick="fuck()">确认使用</button>
       </div>
     </div>
@@ -151,12 +151,10 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        可前往教务网查看
+      <div id="fail_content" class="modal-body">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="window.open('', '_self', '');window.close();">退出</button>
-        <a type="button" class="btn btn-primary" href="http://elite.nju.edu.cn/jiaowu/" target="_blank">去教务网查看</a>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
       </div>
     </div>
   </div>
@@ -183,22 +181,28 @@
             url: "/login",
             data: {'username': usr, 'password': pwd, 'validateCode': val},
             success: function (result) {
-                console.log(result);
+                {#console.log(result);#}
                 if (result.status === "success") {
                     $('#ready').modal({show: true});
                 } else if (result.status === "validate error") {
-
+                    $('#fail_content').html('验证码错误，请重新输入');
+                    $('#fail').modal({show: true});
                 } else if (result.status === "username error") {
-
+                    $('#fail_content').html('用户名错误，请重新输入');
+                    $('#fail').modal({show: true});
                 } else if (result.status === "password error") {
+                    $('#fail_content').html('密码错误，请重新输入');
 
+                    $('#fail').modal({show: true});
                 } else {
-
+                    $('#fail_content').html('未知错误，可能是傻翠服务器炸了');
+                    $('#fail').modal({show: true});
                 }
             },
             error: function (e) {
                 console.log(e);
-                alert("服务器异常，请稍后再试");
+                $('#fail_content').html('未知错误，可能是傻翠服务器炸了');
+                $('#fail').modal({show: true});
             }
         });
     }
@@ -206,23 +210,27 @@
         var $btn = $("#fuck_button");
         $btn.prop("disabled", true);
         $btn.html("<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Loading...");
+        var $back = $("#fuck_back_button");
+        $back.prop("disabled", true);
         $.ajax({
             type: "POST",
             dataType: "json",
             url: "/fuck",
             success: function (result) {
-                console.log(result);
+                {#console.log(result);#}
                 if (result.status === "success") {
                     $btn.button('reset');
                     $('#success').modal({show: true});
                 } else {
-
+                    $('#fail_content').html('未知错误，可能是傻翠服务器炸了');
+                    $('#fail').modal({show: true});
                 }
             },
             timeout: 30000,
             error: function (e) {
                 console.log(e);
-                alert("服务器异常，请稍后再试");
+                $('#fail_content').html('未知错误，可能是傻翠服务器炸了');
+                $('#fail').modal({show: true});
             }
         });
     }
