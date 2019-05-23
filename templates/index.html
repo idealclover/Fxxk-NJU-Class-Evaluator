@@ -234,7 +234,9 @@
             success: function (result) {
                 {#console.log(result);#}
                 if (result.status === "success") {
-                    $btn.button('reset');
+                    {#$btn.button('reset');#}
+                    $('#ready').modal('hide');
+                    $('#success').modal({show: true});
                     $('#success').modal({show: true});
                 } else {
                     $('#fail_content').html('未知错误，可能是傻翠服务器炸了');
