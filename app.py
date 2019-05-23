@@ -63,6 +63,9 @@ def fuck():
         for tr in trs:
             if not tr.contents[9].has_attr('id'):
                 continue
+            # 跳过已评的课程
+            if tr.contents[9].string == "已评":
+                continue
             code = tr.contents[9].attrs['id'][2:]
             r = requests.post('http://elite.nju.edu.cn/jiaowu/student/evalcourse/courseEval.do',
                               data={'method': 'currentEvalItem', 'id': code}, cookies=cookies)
